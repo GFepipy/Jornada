@@ -1,5 +1,5 @@
 // Service worker simples: deixa o app abrir offline depois da primeira visita.
-const CACHE = 'jornada-v3'
+const CACHE = 'jornada-v4'
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './icon.svg'])))
