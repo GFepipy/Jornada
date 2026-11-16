@@ -371,7 +371,7 @@
   text-align: left;
   font-size: 15px;
   line-height: 1.35;
-  cursor: text;
+  cursor: pointer;
   transition: color 0.3s;
 }
 .todo-title span {
@@ -952,4 +952,16 @@
     top: calc(100% + 6px);
     right: 6px;
   }
+}
+
+/* ============ Anotações da tarefa ============ */
+.todo-has-notes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.task-notes {
+  font-size: 15.5px;
+  line-height: 1.6;
+  min-height: 240px;
 }

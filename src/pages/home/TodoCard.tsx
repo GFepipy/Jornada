@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { ListTodo, Play, Plus, RotateCcw, X } from 'lucide-react'
+import { ListTodo, NotebookPen, Play, Plus, RotateCcw, X } from 'lucide-react'
 import type { Area } from '../../types'
 import { addTask, carryOver, patchTask, removeTask, startTimer, useApp } from '../../store'
 import { fmtDur, minToHHMM, todayKey } from '../../lib/dates'
 import { AREAS, AREA_ORDER, DURATIONS } from '../../lib/meta'
-import { Card, Check, Empty, IconBtn, Item, List, Progress, cx, ease } from '../../components/ui'
+import { AutoTextarea, Card, Check, Empty, Modal, IconBtn, Item, List, Progress, cx, ease } from '../../components/ui'
 
 export function TodoCard({ date }: { date: string }) {
   const s = useApp()
@@ -17,6 +17,7 @@ export function TodoCard({ date }: { date: string }) {
   const [editing, setEditing] = useState<string | null>(null)
 
   const tasks = useMemo(() => s.tasks.filter((t) => t.date === date).sort((a, b) => a.start - b.start), [s.tasks, date])
+  const open = s.tasks.find((t) => t.id === editing) ?? null
   const done = tasks.filter((t) => t.done).length
   const overdue = isToday ? s.tasks.filter((t) => t.date < today && !t.done).length : 0
 
@@ -94,33 +95,20 @@ export function TodoCard({ date }: { date: string }) {
             <div className={cx('todo', t.done && 'done')}>
               <Check checked={t.done} onChange={(v) => patchTask(t.id, { done: v })} label={`Concluir: ${t.title}`} color={AREAS[t.area].color} />
               <div className="grow">
-                {editing === t.id ? (
-                  <input
-                    className="todo-edit"
-                    autoFocus
-                    defaultValue={t.title}
-                    aria-label="Editar tarefa"
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v && v !== t.title) patchTask(t.id, { title: v })
-                      setEditing(null)
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') e.currentTarget.blur()
-                      if (e.key === 'Escape') setEditing(null)
-                    }}
-                  />
-                ) : (
-                  <button type="button" className="todo-title" onClick={() => setEditing(t.id)} title="Clique para editar">
-                    <span>{t.title}</span>
-                  </button>
-                )}
+                <button type="button" className="todo-title" onClick={() => setEditing(t.id)} title="Abrir anotações">
+                  <span>{t.title}</span>
+                </button>
                 <div className="todo-meta num">
                   <span>
                     {minToHHMM(t.start)} · {fmtDur(t.duration)}
                   </span>
                   {t.area !== 'pessoal' && <span style={{ color: AREAS[t.area].color }}>{AREAS[t.area].label}</span>}
                   {focus[t.id] >= 1 && <span>{fmtDur(focus[t.id])} de foco</span>}
+                  {t.notes?.trim() && (
+                    <span className="todo-has-notes">
+                      <NotebookPen size={12} /> anotações
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="todo-actions">
@@ -137,6 +125,34 @@ export function TodoCard({ date }: { date: string }) {
           </Item>
         ))}
       </List>
+
+      <Modal open={!!open} onClose={() => setEditing(null)} title="Anotações" wide>
+        {open && (
+          <div className="stack">
+            <input
+              className="big-title serif"
+              value={open.title}
+              aria-label="Título da tarefa"
+              onChange={(e) => patchTask(open.id, { title: e.target.value })}
+              onBlur={(e) => !e.target.value.trim() && patchTask(open.id, { title: 'Tarefa sem título' })}
+            />
+            <AutoTextarea
+              className="task-notes"
+              minRows={10}
+              value={open.notes ?? ''}
+              onChange={(v) => patchTask(open.id, { notes: v })}
+              placeholder="Escreva aqui o que quiser sobre esta tarefa…"
+              ariaLabel="Anotações da tarefa"
+            />
+            <div className="form-actions" style={{ marginTop: 0 }}>
+              <span />
+              <button type="button" className="btn" onClick={() => setEditing(null)}>
+                Pronto
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
 
       {tasks.length === 0 && <Empty icon={<ListTodo size={22} strokeWidth={1.5} />}>Nada planejado para este dia. O que você adicionar aqui já entra no cronograma.</Empty>}
     </Card>

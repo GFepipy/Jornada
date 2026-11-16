@@ -11,6 +11,7 @@ export interface Task {
   duration: number // minutos
   start: number // minutos desde 00:00
   area: Area
+  notes?: string // anotações livres da tarefa
   ref?: { projectId: string; taskId: string } // tarefa vinda de um projeto do Gafero
 }
 
