@@ -20,9 +20,19 @@ npm run build
 
 Gera a pasta `dist/`, que é um site estático: pode ser publicada em Vercel, Netlify, Cloudflare Pages ou GitHub Pages. Publicado em HTTPS, o app pode ser instalado na tela inicial do celular e funciona offline.
 
-## Dados e backup
+## Publicação
 
-Cada navegador/aparelho guarda os próprios dados. Em **Configurações → Seus dados** dá para baixar um backup (`.json`) e importá-lo em outro aparelho.
+Publicado em https://gfepipy.github.io/Jornada/. Cada push na branch `main` gera e publica o site (`.github/workflows/deploy.yml`). No repositório, **Settings → Pages → Source** precisa estar em **GitHub Actions**.
+
+## Sincronização entre aparelhos
+
+Os dados ficam em um arquivo `jornada.json` dentro de um repositório **privado** do GitHub (ex.: `GFepipy/jornada-dados`).
+
+1. Crie o repositório privado.
+2. Crie um token *fine-grained* com acesso só a esse repositório e permissão **Contents: Read and write**.
+3. Em cada aparelho, abra **Configurações → Sincronização**, informe o repositório e cole o token.
+
+O token fica só no navegador de cada aparelho. Em caso de conflito, vale a versão alterada por último. Em **Configurações → Backup manual** também dá para baixar e importar um arquivo `.json`.
 
 ## Estrutura
 
