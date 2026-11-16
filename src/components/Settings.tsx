@@ -5,6 +5,8 @@ import { getState, normalize, replaceState, update, useApp } from '../store'
 import { minToHHMM, todayKey } from '../lib/dates'
 import { Field, Modal, Seg } from './ui'
 import { connect, disconnect, syncNow, useSync } from '../sync'
+import { installApp, isIOS, useInstall } from '../install'
+import { MonitorSmartphone } from 'lucide-react'
 
 export const HOURS = Array.from({ length: 25 }, (_, i) => i * 60)
 
@@ -13,6 +15,31 @@ export function SettingsModal({ open, onClose }: { open: boolean; onClose: () =>
     <Modal open={open} onClose={onClose} title="Configurações">
       <SettingsBody />
     </Modal>
+  )
+}
+
+function InstallSection() {
+  const state = useInstall()
+  return (
+    <div>
+      <div className="label" style={{ marginBottom: 8 }}>
+        Instalar aplicativo
+      </div>
+      <p className="muted" style={{ fontSize: 13.5, marginBottom: 12 }}>
+        {state === 'installed'
+          ? 'O Jornada já está instalado neste aparelho.'
+          : state === 'available'
+            ? 'Cria um ícone do Jornada na tela inicial (Android) ou na área de trabalho, abrindo em janela própria.'
+            : isIOS()
+              ? 'No iPhone/iPad: toque em Compartilhar no Safari e escolha “Adicionar à Tela de Início”.'
+              : 'A instalação não está disponível agora. Abra o site publicado no Chrome ou Edge; se já estiver instalado, o botão não aparece. Também dá para instalar pelo menu do navegador (“Instalar app” / “Adicionar à tela inicial”).'}
+      </p>
+      {state === 'available' && (
+        <button type="button" className="btn" onClick={installApp}>
+          <MonitorSmartphone size={16} /> Instalar o Jornada
+        </button>
+      )}
+    </div>
   )
 }
 
@@ -176,6 +203,8 @@ function SettingsBody() {
           </select>
         </Field>
       </div>
+
+      <InstallSection />
 
       <SyncSection />
 

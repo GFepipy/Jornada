@@ -6,6 +6,7 @@ import '@fontsource/instrument-serif/400-italic.css'
 import './styles/base.css'
 import './styles/home.css'
 import './styles/pages.css'
+import './install' // precisa carregar cedo para capturar o aviso de instalação do navegador
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(

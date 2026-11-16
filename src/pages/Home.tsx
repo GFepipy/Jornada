@@ -175,14 +175,6 @@ export default function Home({ date, setDate }: { date: string; setDate: (d: str
         <div className="col col-a">
           <TimerCard date={date} />
           <HabitsCard date={date} />
-          <WeekCard date={date} setDate={setDate} focusMap={focusMap} goal={s.settings.focusGoal} />
-        </div>
-        <div className="col col-b">
-          <TodoCard date={date} />
-          <SummaryCard st={st} goal={s.settings.focusGoal} />
-        </div>
-        <div className="col col-c">
-          <ScheduleCard date={date} />
           <Card className="note" title="Reflexão do dia">
             <AutoTextarea
               className="plain"
@@ -192,6 +184,14 @@ export default function Home({ date, setDate }: { date: string; setDate: (d: str
               placeholder="Como foi o dia? O que funcionou, o que travou, o que muda amanhã…"
             />
           </Card>
+        </div>
+        <div className="col col-b">
+          <TodoCard date={date} />
+          <SummaryCard st={st} goal={s.settings.focusGoal} />
+        </div>
+        <div className="col col-c">
+          <ScheduleCard date={date} />
+          <WeekCard date={date} setDate={setDate} focusMap={focusMap} goal={s.settings.focusGoal} />
         </div>
       </div>
     </>
